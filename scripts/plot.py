@@ -1,26 +1,38 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 df = pd.read_csv("data/field.csv")
 
-x = df["x"]
-y = df["y"]
-gx = df["gx"]
-gy = df["gy"]
+gx_grid = df.pivot(index="y", columns="x", values="gx")
+gy_grid = df.pivot(index="y", columns="x", values="gy")
+potential_grid = df.pivot(index="y", columns="x", values="potential")
 
-magnitude = (gx**2 + gy**2)**0.5
+X, Y = np.meshgrid(
+    gx_grid.columns.to_numpy(),
+    gx_grid.index.to_numpy()
+)
 
-gx_norm = gx / magnitude
-gy_norm = gy / magnitude
+GX = gx_grid.to_numpy()
+GY = gy_grid.to_numpy()
+PHI = potential_grid.to_numpy()
 
-plt.quiver(x, y, gx_norm, gy_norm)
+magnitude = np.sqrt(GX**2 + GY**2)
+
+GX_norm = GX / magnitude
+GY_norm = GY / magnitude
+
+plt.contour(X, Y, PHI, levels=20)
+plt.quiver(X, Y, GX_norm, GY_norm)
 
 plt.xlabel("x")
 plt.ylabel("y")
 plt.axis("equal")
-plt.show()
 
-plt.scatter(x, y, c=magnitude)
-plt.colorbar(label="Gravitational field strength")
-plt.axis("equal")
+plt.savefig(
+    "data/gravity_field.png",
+    dpi=300,
+    bbox_inches="tight"
+)
+
 plt.show()

@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
+
+Path("plots").mkdir(exist_ok=True)
 
 df = pd.read_csv("data/field.csv")
 
@@ -30,7 +33,7 @@ plt.ylabel("y")
 plt.axis("equal")
 
 plt.savefig(
-    "data/gravity_field.png",
+    "plots/gravity_field.png",
     dpi=300,
     bbox_inches="tight"
 )
